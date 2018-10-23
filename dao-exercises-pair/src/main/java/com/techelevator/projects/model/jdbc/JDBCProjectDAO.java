@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
@@ -38,7 +39,7 @@ public class JDBCProjectDAO implements ProjectDAO {
 	}
 
 	@Override
-	public void removeEmployeeFromProject(Long projectId, Long employeeId) {		//POSSIBLY NEED TO CHECK FOR VALID EMPLOYEE?
+	public void removeEmployeeFromProject(Long projectId, Long employeeId) {
 		
 		String sqlRemoveEmployee = "DELETE FROM project_employee WHERE project_id = ? AND employee_id = ?";
 		jdbcTemplate.update(sqlRemoveEmployee, projectId, employeeId);
@@ -46,10 +47,13 @@ public class JDBCProjectDAO implements ProjectDAO {
 	}
 
 	@Override
-	public void addEmployeeToProject(Long projectId, Long employeeId) {			//POSSIBLY NEED TO CHECK FOR VALID EMPLOYEE?
-		
-		String sqlAddEmployee = "INSERT INTO project_employee(project_id, employee_id) values(?, ?) ";
-		jdbcTemplate.update(sqlAddEmployee, projectId, employeeId);
+	public void addEmployeeToProject(Long projectId, Long employeeId) {
+		try {
+			String sqlAddEmployee = "INSERT INTO project_employee(project_id, employee_id) values(?, ?) ";
+			jdbcTemplate.update(sqlAddEmployee, projectId, employeeId);
+		} catch(DuplicateKeyException ex) {
+			//If duplicate value is entered, will catch the exception.
+		}
 	}
 
 }
