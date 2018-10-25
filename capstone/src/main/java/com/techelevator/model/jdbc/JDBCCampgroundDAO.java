@@ -34,7 +34,6 @@ public class JDBCCampgroundDAO implements CampgroundDAO {
 		}
 		
 		return allCampgroundsByParkId;
-		
 	}
 	
 	private Campground mapRowToCampground(SqlRowSet results) {

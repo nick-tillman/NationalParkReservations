@@ -49,7 +49,7 @@ public class JDBCParkDAO implements ParkDAO {
 		
 		String sqlGetParkById = "SELECT * FROM park WHERE park_id = ?;";
 		
-		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlGetParkById);
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlGetParkById, id);
 		
 		while(results.next()) {
 			parkById.setParkId(results.getLong("park_id"));
