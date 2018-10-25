@@ -7,11 +7,9 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
 import com.techelevator.projects.model.Department;
@@ -38,7 +36,7 @@ public class JDBCDepartmentDAOIntegrationTest {
 	
 	@Before
 	public void setup() {
-		this.dao = new JDBCDepartmentDAO(dataSource);
+		dao = new JDBCDepartmentDAO(dataSource);
 	}
 	
 	@After
