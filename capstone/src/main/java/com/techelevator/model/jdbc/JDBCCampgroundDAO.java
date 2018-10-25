@@ -7,6 +7,8 @@ import com.techelevator.model.Campground;
 import com.techelevator.model.CampgroundDAO;
 
 public class JDBCCampgroundDAO implements CampgroundDAO {
+	
+	
 
 	@Override
 	public List<Campground> getAllCampgroundsInPark(long parkId) {
