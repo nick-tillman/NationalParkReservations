@@ -2,38 +2,38 @@ package com.techelevator.model;
 
 public class Site {
 	
-	private long site_id;
-	private int campground_id;
-	private int site_number;
-	private int max_occupancy;
+	private long siteId;
+	private int campgroundId;
+	private int siteNumber;
+	private int maxOccupancy;
 	private boolean accessible;
-	private int max_rv_length;
+	private int maxRvLength;
 	private boolean utilities;
 	
 	
-	public long getSite_id() {
-		return site_id;
+	public long getSiteId() {
+		return siteId;
 	}
-	public void setSite_id(long site_id) {
-		this.site_id = site_id;
+	public void setSiteId(long siteId) {
+		this.siteId = siteId;
 	}
-	public int getCampground_id() {
-		return campground_id;
+	public int getCampgroundId() {
+		return campgroundId;
 	}
-	public void setCampground_id(int campground_id) {
-		this.campground_id = campground_id;
+	public void setCampgroundId(int campgroundId) {
+		this.campgroundId = campgroundId;
 	}
-	public int getSite_number() {
-		return site_number;
+	public int getSiteNumber() {
+		return siteNumber;
 	}
-	public void setSite_number(int site_number) {
-		this.site_number = site_number;
+	public void setSiteNumber(int siteNumber) {
+		this.siteNumber = siteNumber;
 	}
-	public int getMax_occupancy() {
-		return max_occupancy;
+	public int getMaxOccupancy() {
+		return maxOccupancy;
 	}
-	public void setMax_occupancy(int max_occupancy) {
-		this.max_occupancy = max_occupancy;
+	public void setMaxOccupancy(int maxOccupancy) {
+		this.maxOccupancy = maxOccupancy;
 	}
 	public boolean isAccessible() {
 		return accessible;
@@ -41,11 +41,11 @@ public class Site {
 	public void setAccessible(boolean accessible) {
 		this.accessible = accessible;
 	}
-	public int getMax_rv_length() {
-		return max_rv_length;
+	public int getMaxRvLength() {
+		return maxRvLength;
 	}
-	public void setMax_rv_length(int max_rv_length) {
-		this.max_rv_length = max_rv_length;
+	public void setMaxRvLength(int maxRvLength) {
+		this.maxRvLength = maxRvLength;
 	}
 	public boolean isUtilities() {
 		return utilities;
@@ -53,6 +53,5 @@ public class Site {
 	public void setUtilities(boolean utilities) {
 		this.utilities = utilities;
 	}
-	
 	
 }
