@@ -2,8 +2,6 @@ package com.techelevator.projects.model.jdbc;
 
 import static org.junit.Assert.*;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.After;
@@ -25,6 +23,7 @@ public class JDBCProjectDAOIntegrationTest {
 	private JdbcTemplate jdbcTemplate;
 	private static SingleConnectionDataSource dataSource;
 	private JDBCProjectDAO dao;
+	private JDBCEmployeeDAO empDAO;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -48,7 +47,8 @@ public class JDBCProjectDAOIntegrationTest {
 	@Before
 	public void setUp() throws Exception {
 		jdbcTemplate = new JdbcTemplate(dataSource);
-		this.dao = new JDBCProjectDAO(dataSource);
+		dao = new JDBCProjectDAO(dataSource);
+		empDAO = new JDBCEmployeeDAO(dataSource);
 
 	}
 
@@ -59,90 +59,51 @@ public class JDBCProjectDAOIntegrationTest {
 	}
 
 	@Test
-	public void getAListOfNewActiveProjects() {
+	public void getAListOfNewActiveProjectsTest() {
+		String sql = "SELECT count(name) FROM project WHERE from_date IS NOT NULL AND to_date IS NULL; ";
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
+		int projectCount = 0;
+		while(results.next()) {
+			projectCount = results.getInt("count");
+		}
+		List<Project> activeProjects = dao.getAllActiveProjects();
+		assertEquals("Checking for size match", projectCount, activeProjects.size());
 		
-		Project newProject = new Project();
-			newProject.setId(3l);
-			newProject.setName("The Never-ending Project");
-			newProject.setStartDate(LocalDate.of(2010, 9, 01));
-			newProject.setEndDate(null);
-		
-		List<Project> results = dao.getAllActiveProjects();	
-		
-		assertEquals(1, results.size());
-				
-			}
+	}
 	
 	@Test 
-	public void employeeAddedToProject() {
-		String sql = "SELECT * FROM employee WHERE employee_id = 2; ";
+	public void employeeAddedToProjectTest() {
+		List<Employee> employeeList = empDAO.getEmployeesWithoutProjects();
+		String sql = "SELECT count(employee_id) FROM project_employee WHERE project_id = 3 GROUP BY project_id; ";
 		SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
-		Employee newEmployee = createEmployee(results);
-		dao.addEmployeeToProject(3l, 2l);
-		sql = "SELECT * FROM employee WHERE employee_id IN (SELECT employee_id FROM "
-							+ "project_employee WHERE employee_id = 2 AND project_id = 3);";
+		int employeeCountBefore = 0;
+		while(results.next()) {
+			employeeCountBefore = results.getInt("count");
+		}
+		dao.addEmployeeToProject((long)3, employeeList.get(0).getId());
 		results = jdbcTemplate.queryForRowSet(sql);
-		Employee returnedEmployee = createEmployee(results);
-		
-		assertEquals(newEmployee.getId(), returnedEmployee.getId());
-		
+		int employeeCountAfter = 0;
+		while(results.next()) {
+			employeeCountAfter = results.getInt("count");
+		}
+		assertEquals("Checking for size match", employeeCountBefore + 1, employeeCountAfter);
 	}
 	
 	@Test
-	public void employeeRemovedFromProject() {
-		
-		String sql = "SELECT * FROM employee WHERE employee_id = 2; ";
+	public void employeeRemovedFromProjectTest() {
+		List<Employee> employeeList = empDAO.getEmployeesByProjectId(3l);
+		String sql = "SELECT count(employee_id) FROM project_employee WHERE project_id = 3 GROUP BY project_id; ";
 		SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
-		Employee newEmployee = createEmployee(results);
-		dao.addEmployeeToProject(3l, 2l);
-		sql = "SELECT * FROM employee WHERE employee_id IN "
-				+ "(SELECT employee_id FROM project_employee WHERE project_id = 3);";
-		results = jdbcTemplate.queryForRowSet(sql);
-		List<Employee> newList = createEmployeeList(results);
-		assertEquals(5, newList.size());
-		
-		dao.removeEmployeeFromProject(3l, 2l);
-		results = jdbcTemplate.queryForRowSet(sql);
-		List<Employee> newList2 = createEmployeeList(results);
-		assertEquals(4, newList2.size());
-		
-
-	}
-
-	private Employee createEmployee(SqlRowSet results) {
-		Employee newEmployee = new Employee();
+		int employeeCountBefore = 0;
 		while(results.next()) {
-			newEmployee.setId(results.getLong("employee_id"));
-			newEmployee.setDepartmentId(results.getLong("department_id"));
-			newEmployee.setFirstName(results.getString("first_name"));
-			newEmployee.setLastName(results.getString("last_name"));
-			newEmployee.setGender(results.getString("gender").charAt(0));
-			newEmployee.setHireDate(results.getDate("hire_date").toLocalDate());
+			employeeCountBefore = results.getInt("count");
 		}
-		return newEmployee;
-	}
-	
-	private List<Employee> createEmployeeList(SqlRowSet results) {
-		List<Employee> newList = new ArrayList<Employee>();
+		dao.removeEmployeeFromProject((long)3, employeeList.get(0).getId());
+		results = jdbcTemplate.queryForRowSet(sql);
+		int employeeCountAfter = 0;
 		while(results.next()) {
-			Employee newEmployee = new Employee();
-			newEmployee.setId(results.getLong("employee_id"));
-			newEmployee.setDepartmentId(results.getLong("department_id"));
-			newEmployee.setFirstName(results.getString("first_name"));
-			newEmployee.setLastName(results.getString("last_name"));
-			newEmployee.setGender(results.getString("gender").charAt(0));
-			newEmployee.setHireDate(results.getDate("hire_date").toLocalDate());
-			newList.add(newEmployee);
+			employeeCountAfter = results.getInt("count");
 		}
-		return newList;
+		assertEquals("Checking for size match", employeeCountBefore - 1, employeeCountAfter);
 	}
-	private void assertProjectsAreEqual(Project expected, Project actual) {
-		assertEquals("ID Match", expected.getId(), actual.getId());
-		assertEquals("Name Match", expected.getName(), actual.getName());
-		assertEquals("From Date Match", expected.getStartDate(), actual.getStartDate());
-		assertEquals("To Date Match", expected.getEndDate(), actual.getEndDate());
-
-	}
-	
-
 }
