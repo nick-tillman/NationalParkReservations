@@ -8,22 +8,22 @@ import com.techelevator.model.ReservationDAO;
 public class JDBCReservationDAO implements ReservationDAO{
 
 	@Override
-	public List<Reservation> getAllReservationsBySiteId() {
+	public List<Reservation> getReservationsBySiteId() {
 		return null;
 	}
 
 	@Override
-	public List<Reservation> getAllReservationsByCampgroundId() {
+	public List<Reservation> getReservationsByCampgroundId() {
 		return null;
 	}
 
 	@Override
-	public List<Reservation> getAllReservationsForSiteByDate() {
+	public List<Reservation> getReservationsForSiteByDate() {
 		return null;
 	}
 
 	@Override
-	public List<Reservation> getAllReservationsForCampgroundByDate() {
+	public List<Reservation> getReservationsForCampgroundByDate() {
 		return null;
 	}
 
