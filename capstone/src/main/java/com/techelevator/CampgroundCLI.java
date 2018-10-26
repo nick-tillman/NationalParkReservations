@@ -2,10 +2,13 @@ package com.techelevator;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Scanner;
 
 import javax.sql.DataSource;
+import java.time.temporal.ChronoUnit;
+
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
@@ -97,6 +100,7 @@ public class CampgroundCLI {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-d-yyyy");
 		LocalDate fd = LocalDate.parse(fromDate, formatter);
 		LocalDate td = LocalDate.parse(toDate, formatter);
+		long daysBetween = ChronoUnit.DAYS.between(fd, td);
 		List<Site> sites = siteDAO.getListOfAvailableSites(id, fd, td);
 		printHeading("Results Matching Your Search Criteria");
 		String siteNo = String.format("%-13s", "Site No.")	;

@@ -61,9 +61,8 @@ public class Site {
 		String accessible = String.format("%-16s", this.accessible);
 		String maxRv = String.format("%-18s", this.maxRvLength);
 		String util = String.format("%-18s", this.utilities);
-		String cost = String.format("%-13s", "XX");
 
 
-		return siteNo + maxOcc + accessible + maxRv + util+cost;
+		return siteNo + maxOcc + accessible + maxRv + util;
 	}
 }

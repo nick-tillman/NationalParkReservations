@@ -9,6 +9,8 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
+import java.time.temporal.ChronoUnit;
+
 import com.techelevator.model.Site;
 import com.techelevator.model.SiteDAO;
 
@@ -31,12 +33,15 @@ private JdbcTemplate jdbcTemplate;
 	@Override
 	public List<Site> getListOfAvailableSites(long campgroundId, LocalDate fromDate, LocalDate toDate) {
 		List<Site> newList = new ArrayList<Site>();
-		String sql = "SELECT * FROM site WHERE campground_id = ? "
-										+ "AND NOT site_id IN (SELECT site_id FROM reservation "
-										+ "WHERE ((from_date BETWEEN ? AND ?) "
-										+ "OR (to_date BETWEEN ? AND ?)) GROUP BY site_id) LIMIT 5;";
-		SqlRowSet results = jdbcTemplate.queryForRowSet(sql, campgroundId, fromDate, toDate, fromDate, toDate);
-		newList = createSiteList(results);
+		long daysBetween = ChronoUnit.DAYS.between(fromDate, toDate);
+		if(daysBetween > 0) {
+			String sql = "SELECT * FROM site WHERE campground_id = ? "
+											+ "AND NOT site_id IN (SELECT site_id FROM reservation "
+											+ "WHERE ((from_date BETWEEN ? AND ?) "
+											+ "OR (to_date BETWEEN ? AND ?)) GROUP BY site_id) LIMIT 5;";
+			SqlRowSet results = jdbcTemplate.queryForRowSet(sql, campgroundId, fromDate, toDate, fromDate, toDate);
+			newList = createSiteList(results);
+		}
 		return newList;
 	}
 	
