@@ -55,5 +55,7 @@ public class Park {
 		this.description = description;
 	
 	}
-
+	public String toString() {
+		return this.name;
+	}
 }
