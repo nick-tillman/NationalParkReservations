@@ -31,8 +31,6 @@ Temporary Items
 
 
 #Eclipse Stuff
-
-
 .metadata
 bin/
 tmp/
@@ -41,6 +39,8 @@ tmp/
 *.swp
 *~.nib
 local.properties
+.classpath
+.project
 .settings/
 .loadpath
 .recommenders
@@ -88,3 +88,11 @@ local.properties
 .cache-main
 .scala_dependencies
 .worksheet
+
+
+
+#Maven stuff
+log/
+target/
+
+
