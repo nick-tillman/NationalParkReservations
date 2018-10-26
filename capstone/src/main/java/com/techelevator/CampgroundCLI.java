@@ -1,5 +1,7 @@
 package com.techelevator;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 
@@ -9,6 +11,7 @@ import org.apache.commons.dbcp2.BasicDataSource;
 
 import com.techelevator.model.Campground;
 import com.techelevator.model.Park;
+import com.techelevator.model.Site;
 import com.techelevator.model.jdbc.JDBCCampgroundDAO;
 import com.techelevator.model.jdbc.JDBCParkDAO;
 import com.techelevator.model.jdbc.JDBCReservationDAO;
@@ -83,7 +86,35 @@ public class CampgroundCLI {
 	private void handleSearchForReservation(Park parkChoice) {
 		printHeading("Search for Campground Reservation");
 		printAllCampgroundsForPark(parkChoice.getParkId());
-		String campground = getUserInput("Which campground?");
+		String campground = getUserInput("Which campground (enter 0 to cancel)?");
+		String fromDate = getUserInput("What is the arrival date?");
+		String toDate = getUserInput("What is the departure date?");
+		printAllAvailableSites(campground, fromDate, toDate);
+	}
+	
+	private void printAllAvailableSites(String campground, String fromDate, String toDate) {
+		long id = Long.parseLong(campground);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-d-yyyy");
+		LocalDate fd = LocalDate.parse(fromDate, formatter);
+		LocalDate td = LocalDate.parse(toDate, formatter);
+		List<Site> sites = siteDAO.getListOfAvailableSites(id, fd, td);
+		printHeading("Results Matching Your Search Criteria");
+		String siteNo = String.format("%-13s", "Site No.")	;
+		String maxOcc = String.format("%-13s", "Max Occup.");
+		String access = String.format("%-16s", "Accessible?");
+		String maxRv = String.format("%-18s", "Max RV Length");
+		String util = String.format("%-18s", "Utility");
+		String cost = String.format("%-13s", "Cost");
+		System.out.println();
+		System.out.println(siteNo + maxOcc + access + maxRv + util + cost);
+		if(sites.size() > 0) {
+			for(Site site : sites) {
+				System.out.println(site.toString());
+			}
+		} else {
+			System.out.println("\n*** No results ***");
+		}
+		
 	}
 	
 	private void printAllCampgroundsForPark(long parkId) {
@@ -110,7 +141,16 @@ public class CampgroundCLI {
 		System.out.println(String.format("%-20s", "Area:") + choice.getArea()+" sq km");
 		System.out.println(String.format("%-20s", "Annual Visitors:") + choice.getVisitors());
 		System.out.println();
-		System.out.println(choice.getDescription());
+		int charCount = 0;
+		for(int i = 0; i < choice.getDescription().toCharArray().length; i++) {
+			System.out.print(choice.getDescription().toCharArray()[i]);
+			charCount++;
+			if(charCount > 60 && choice.getDescription().toCharArray()[i] == ' ') {
+				System.out.print("\n");
+				charCount = 0;
+			}
+		}
+		System.out.println();
 	}
 	
 	private void printHeading(String headingText) {

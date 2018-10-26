@@ -1,5 +1,7 @@
 package com.techelevator.model;
 
+import java.time.Month;
+
 public class Site {
 	
 	private long siteId;
@@ -53,5 +55,15 @@ public class Site {
 	public void setUtilities(boolean utilities) {
 		this.utilities = utilities;
 	}
-	
+	public String toString() {		
+		String siteNo = String.format("%-13s", this.siteNumber);
+		String maxOcc = String.format("%-13s", this.maxOccupancy);
+		String accessible = String.format("%-16s", this.accessible);
+		String maxRv = String.format("%-18s", this.maxRvLength);
+		String util = String.format("%-18s", this.utilities);
+		String cost = String.format("%-13s", "XX");
+
+
+		return siteNo + maxOcc + accessible + maxRv + util+cost;
+	}
 }

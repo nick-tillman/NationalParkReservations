@@ -34,7 +34,7 @@ private JdbcTemplate jdbcTemplate;
 		String sql = "SELECT * FROM site WHERE campground_id = ? "
 										+ "AND NOT site_id IN (SELECT site_id FROM reservation "
 										+ "WHERE ((from_date BETWEEN ? AND ?) "
-										+ "OR (to_date BETWEEN ? AND ?)) GROUP BY site_id);";
+										+ "OR (to_date BETWEEN ? AND ?)) GROUP BY site_id) LIMIT 5;";
 		SqlRowSet results = jdbcTemplate.queryForRowSet(sql, campgroundId, fromDate, toDate, fromDate, toDate);
 		newList = createSiteList(results);
 		return newList;
