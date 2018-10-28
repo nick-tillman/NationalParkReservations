@@ -99,22 +99,36 @@ public class CampgroundCLI {
 			List<Campground> campgrounds = campgroundDAO.getAllCampgroundsInPark(parkChoice.getParkId());
 			String campString = getUserInput("\nWhich campground (enter 0 to cancel)?");
 			int campInt = Integer.parseInt(campString);
-			if(campInt <= campgrounds.size() && campInt > 0) {
-				String fromDate = getUserInput("What is the arrival date?");
-				String toDate = getUserInput("What is the departure date?");
-				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-d-yyyy");
-				LocalDate fd = LocalDate.parse(fromDate, formatter);
-				LocalDate td = LocalDate.parse(toDate, formatter);
+			
+			String fromDate = getUserInput("What is the arrival date? (mm-dd-yyyy)");
+			String toDate = getUserInput("What is the departure date? (mm-dd-yyyy)");
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-d-yyyy");
+			LocalDate fd = LocalDate.parse(fromDate, formatter);
+			LocalDate td = LocalDate.parse(toDate, formatter);
+			int fromDateMonth = fd.getMonthValue();
+			int toDateMonth = td.getMonthValue();
+			
+				if(campInt == 2 && parkChoice.getParkId() == 1 && fromDateMonth < 5 || toDateMonth > 9) {
+				System.out.println("\nTo book this campground, please select another date between its open months of May and September.");
+				}
+			else if(campInt == 3 && fromDateMonth < 5 || toDateMonth > 10) {
+				System.out.println("\nTo book this campground, please select another date between its open months of May and October.");
+				}
+			else if(campInt == 1 && parkChoice.getParkId() == 3 && fromDateMonth < 5 || toDateMonth > 11) {
+				System.out.println("\nTo book this campground, please select another date between its open months of May and November.");
+			
+			} else if(campInt <= campgrounds.size() && campInt > 0) {
+				
 				List<Site> sites = printAllAvailableSites(campgrounds.get(campInt - 1), fd, td);
 				makeReservation(sites, fd, td);
 				done = true;
+				
 			} else if(campInt > campgrounds.size()) {
 				System.out.println("\n*** "+campInt+" is not a valid option ***\n");
 			} else {
 				done = true;
 			}
 		}
-		
 	}
 	
 	private void makeReservation(List<Site> sites, LocalDate fromDate, LocalDate toDate) {
@@ -188,6 +202,7 @@ public class CampgroundCLI {
 		printHeading("Results Matching Your Search Criteria");
 		System.out.println(String.format("%-13s%-13s%-16s%-18s%-18s%-13s", 
 								"Site No.","Max Occup.","Accessible?","Max RV Length","Utility","Cost"));
+			
 		if(sites.size() > 0) {
 			for(Site site : sites) {
 				System.out.println(site.toString() + "$" + costString);
