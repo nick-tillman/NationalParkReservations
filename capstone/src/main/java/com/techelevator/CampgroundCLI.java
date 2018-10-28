@@ -109,13 +109,13 @@ public class CampgroundCLI {
 			int toDateMonth = td.getMonthValue();
 			
 				if(campInt == 2 && parkChoice.getParkId() == 1 && fromDateMonth < 5 || toDateMonth > 9) {
-				System.out.println("\nTo book this campground, please select another date between its open months of May and September.");
+				System.out.println("\nTo book this campground, please select dates between its open months of May and September.");
 				}
 			else if(campInt == 3 && parkChoice.getParkId() == 1 && fromDateMonth < 5 || toDateMonth > 10) {
-				System.out.println("\nTo book this campground, please select another date between its open months of May and October.");
+				System.out.println("\nTo book this campground, please select dates between its open months of May and October.");
 				}
 			else if(campInt == 1 && parkChoice.getParkId() == 3 && fromDateMonth < 5 || toDateMonth > 11) {
-				System.out.println("\nTo book this campground, please select another date between its open months of May and November.");
+				System.out.println("\nTo book this campground, please select dates between its open months of May and November.");
 			
 			} else if(campInt <= campgrounds.size() && campInt > 0) {
 				
