@@ -111,7 +111,7 @@ public class CampgroundCLI {
 				if(campInt == 2 && parkChoice.getParkId() == 1 && fromDateMonth < 5 || toDateMonth > 9) {
 				System.out.println("\nTo book this campground, please select another date between its open months of May and September.");
 				}
-			else if(campInt == 3 && fromDateMonth < 5 || toDateMonth > 10) {
+			else if(campInt == 3 && parkChoice.getParkId() == 1 && fromDateMonth < 5 || toDateMonth > 10) {
 				System.out.println("\nTo book this campground, please select another date between its open months of May and October.");
 				}
 			else if(campInt == 1 && parkChoice.getParkId() == 3 && fromDateMonth < 5 || toDateMonth > 11) {
