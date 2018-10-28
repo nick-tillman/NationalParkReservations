@@ -50,17 +50,13 @@ public class Campground {
 	}
 	public String toString() {
 		int openFromMonth = Integer.parseInt(this.openFromMonth);
-		int openToMonth = Integer.parseInt(this.openToMonth);
 		String om = Month.of(openFromMonth).toString();
 		String omConversion = om.substring(0,1).toUpperCase() + om.substring(1).toLowerCase();
+		int openToMonth = Integer.parseInt(this.openToMonth);
 		String cm = Month.of(openToMonth).toString();
 		String cmConversion = cm.substring(0,1).toUpperCase() + cm.substring(1).toLowerCase();
 		
 		String df = String.format("%.2f", this.dailyFee);
-		String name = String.format("%-32s", this.name);
-		String open = String.format("%-10s", omConversion);
-		String close = String.format("%-13s", cmConversion);
-		String fee = String.format("%-20s", "$"+df);
-		return name+open+close+fee;
+		return String.format("%-32s%-10s%-13s%-20s", this.name, omConversion, cmConversion, "$"+df);
 	}
 }

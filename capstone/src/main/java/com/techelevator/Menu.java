@@ -24,7 +24,7 @@ public class Menu {
 		return choice;
 	}
 
-	private Object getChoiceFromUserInput(Object[] options) {
+	public Object getChoiceFromUserInput(Object[] options) {
 		Object choice = null;
 		String userInput = in.nextLine();
 		try {
@@ -42,10 +42,10 @@ public class Menu {
 	}
 
 	private void displayMenuOptions(Object[] options, String message) {
-		out.print("\n"+message+"\n");
+		out.print(message+"\n");
 		for(int i = 0; i < options.length; i++) {
 			int optionNum = i+1;
-			out.println(optionNum+") "+options[i]);
+			out.println("\t"+optionNum+") "+options[i]);
 		}
 		out.flush();
 	}
