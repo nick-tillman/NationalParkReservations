@@ -117,8 +117,8 @@ public class CampgroundCLI {
 			if(campInt == 0) {
 				done = true;
 			} else {
-				String fromDate = getUserInput("What is the arrival date? (mm/dd/yyyy)");
-				String toDate = getUserInput("What is the departure date? (mm/dd/yyyy)");
+				String fromDate = checkValidDate("What is the arrival date? (mm/dd/yyyy)");
+				String toDate = checkValidDate("What is the departure date? (mm/dd/yyyy)");
 				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/d/yyyy");
 				LocalDate fd = LocalDate.parse(fromDate, formatter);
 				LocalDate td = LocalDate.parse(toDate, formatter);
@@ -230,6 +230,29 @@ public class CampgroundCLI {
 		
 	}
 	
+	private String checkValidDate(String message) {
+		boolean done = false;
+		String date = "";
+		while(!done) {
+			date = getUserInput(message);
+			int numCount = 0;
+			int slashCount = 0;
+			for(char c : date.toCharArray()) {
+				if(Character.isDigit(c)) {
+					numCount++;
+				} else if(c == '/') {
+					slashCount++;
+				}
+			}
+			if(numCount == 8 && slashCount == 2) {
+				done = true;
+			} else {
+				System.out.println("*** Please enter a valid date in the format mm/dd/yyyy including slashes. ***");
+			}
+		}
+		return date;
+
+	}
 	private void printHeading(String headingText) {
 		System.out.println(headingText);
 	}
