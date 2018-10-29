@@ -259,7 +259,13 @@ public class CampgroundCLI {
 				}
 			}
 			if(numCount == 8 && slashCount == 2 && date.substring(2,3).equals("/") && date.substring(5,6).equals("/")) {
-				done = true;
+				int month = Integer.parseInt(date.substring(0,2));
+				int day = Integer.parseInt(date.substring(3,5));
+				if(month > 0 && month < 13 && day > 0 && day < 32) {
+					done = true;
+				} else {
+					System.out.println("*** Please enter a valid date in the format mm/dd/yyyy including slashes ***");
+				}
 			} else {
 				System.out.println("*** Please enter a valid date in the format mm/dd/yyyy including slashes ***");
 			}
