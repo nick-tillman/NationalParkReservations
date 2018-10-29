@@ -54,7 +54,26 @@ public class Site {
 		this.utilities = utilities;
 	}
 	public String toString() {
+		String util = "";
+		String access = "";
+		String maxRv = "";
+		if(this.utilities == true) {
+			util = "Yes";
+		} else {
+			util = "N/A";
+		}
+		if(this.accessible == true) {
+			access = "Yes";
+		} else {
+			access = "No";
+		}
+		if(this.maxRvLength == 0) {
+			maxRv = "N/A";
+		} else {
+			maxRv = Integer.toString(this.maxRvLength);
+		}
+		
 		return String.format("%-13s%-13s%-16s%-18s%-18s", 
-				this.siteNumber, this.maxOccupancy, this.accessible, this.maxRvLength, this.utilities);
+				this.siteNumber, this.maxOccupancy, access, maxRv, util);
 	}
 }
