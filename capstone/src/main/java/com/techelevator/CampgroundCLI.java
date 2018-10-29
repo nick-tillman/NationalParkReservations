@@ -112,7 +112,7 @@ public class CampgroundCLI {
 			printHeading("\nSearch for Campground Reservation");
 			printAllCampgroundsForPark(parkChoice.getParkId());
 			List<Campground> campgrounds = campgroundDAO.getAllCampgroundsInPark(parkChoice.getParkId());
-			String campString = getUserInput("\nWhich campground (enter 0 to cancel)?");
+			String campString = getValidNumber("\nWhich campground (enter 0 to cancel)?");
 			int campInt = Integer.parseInt(campString);
 			if(campInt == 0) {
 				done = true;
@@ -154,7 +154,7 @@ public class CampgroundCLI {
 		}
 		boolean done = false;
 		while(!done) {
-			String siteChoice = getUserInput("\nWhich site should be reserved (enter 0 to cancel)?");
+			String siteChoice = getValidNumber("\nWhich site should be reserved (enter 0 to cancel)?");
 			if(siteOptions.contains(siteChoice)) {
 				int siteChoiceInt = Integer.parseInt(siteChoice);
 				long siteId = 0;
@@ -228,6 +228,19 @@ public class CampgroundCLI {
 		}
 		return sites;
 		
+	}
+	
+	private String getValidNumber(String message) {
+		boolean done = false;
+		String input = "";
+		while(!done) {
+			input = getUserInput(message);
+			if(input.toCharArray().length == 1 && Character.isDigit(input.charAt(0))) {
+				done = true;
+			} else {
+				System.out.println("\n*** "+input+" is not a valid option ***\n");			}
+		}
+		return input;
 	}
 	
 	private String checkValidDate(String message) {

@@ -24,12 +24,12 @@ public class Menu {
 		return choice;
 	}
 
-	public Object getChoiceFromUserInput(Object[] options) {
+	private Object getChoiceFromUserInput(Object[] options) {
 		Object choice = null;
 		String userInput = in.nextLine();
 		try {
 			int selectedOption = Integer.valueOf(userInput);
-			if(selectedOption <= options.length) {
+			if(selectedOption <= options.length && selectedOption > 0) {
 				choice = options[selectedOption - 1];
 			}
 		} catch(NumberFormatException e) {
