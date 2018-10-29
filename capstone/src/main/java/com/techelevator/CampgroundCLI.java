@@ -166,7 +166,7 @@ public class CampgroundCLI {
 				String resName = getUserInput("What name should the reservation be made under?");
 				Reservation newRes = new Reservation((int)siteId, resName, fromDate, toDate);
 				Reservation returnedRes = reservationDAO.makeReservation(newRes);
-				System.out.println("The Reservation has been made and the confirmation id is " + returnedRes.getReservationId() + "\n");
+				System.out.println("\nThe Reservation has been made and the confirmation id is " + returnedRes.getReservationId() + "\n");
 				done = true;
 			} else if(siteChoice.equals("0")) {
 				done = true;
