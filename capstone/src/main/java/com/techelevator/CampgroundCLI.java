@@ -100,29 +100,27 @@ public class CampgroundCLI {
 			String campString = getUserInput("\nWhich campground (enter 0 to cancel)?");
 			int campInt = Integer.parseInt(campString);
 			
-			String fromDate = getUserInput("What is the arrival date? (mm-dd-yyyy)");
-			String toDate = getUserInput("What is the departure date? (mm-dd-yyyy)");
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-d-yyyy");
+			String fromDate = getUserInput("What is the arrival date? (mm/dd/yyyy)");
+			String toDate = getUserInput("What is the departure date? (mm/dd/yyyy)");
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/d/yyyy");
 			LocalDate fd = LocalDate.parse(fromDate, formatter);
 			LocalDate td = LocalDate.parse(toDate, formatter);
 			int fromDateMonth = fd.getMonthValue();
 			int toDateMonth = td.getMonthValue();
+			LocalDate today = LocalDate.now();
 			
-				if(campInt == 2 && parkChoice.getParkId() == 1 && fromDateMonth < 5 || toDateMonth > 9) {
+			if(fd.isBefore(today) || td.isBefore(today)) {
+				System.out.println("\nPlease enter an unpcoming date.");
+			} else if(campInt == 2 && parkChoice.getParkId() == 1 && (fromDateMonth < 5 || toDateMonth > 9)) {
 				System.out.println("\nTo book this campground, please select dates between its open months of May and September.");
-				}
-			else if(campInt == 3 && parkChoice.getParkId() == 1 && fromDateMonth < 5 || toDateMonth > 10) {
+			} else if(campInt == 3 && parkChoice.getParkId() == 1 && (fromDateMonth < 5 || toDateMonth > 10)) {
 				System.out.println("\nTo book this campground, please select dates between its open months of May and October.");
-				}
-			else if(campInt == 1 && parkChoice.getParkId() == 3 && fromDateMonth < 5 || toDateMonth > 11) {
+			} else if(campInt == 1 && parkChoice.getParkId() == 3 && (fromDateMonth < 5 || toDateMonth > 11)) {
 				System.out.println("\nTo book this campground, please select dates between its open months of May and November.");
-			
 			} else if(campInt <= campgrounds.size() && campInt > 0) {
-				
 				List<Site> sites = printAllAvailableSites(campgrounds.get(campInt - 1), fd, td);
 				makeReservation(sites, fd, td);
 				done = true;
-				
 			} else if(campInt > campgrounds.size()) {
 				System.out.println("\n*** "+campInt+" is not a valid option ***\n");
 			} else {
@@ -150,7 +148,7 @@ public class CampgroundCLI {
 				String resName = getUserInput("What name should the reservation be made under?");
 				Reservation newRes = new Reservation((int)siteId, resName, fromDate, toDate);
 				Reservation returnedRes = reservationDAO.makeReservation(newRes);
-				System.out.println("The Reservation has been made and the confirmation id is " + returnedRes.getReservationId());
+				System.out.println("The Reservation has been made and the confirmation id is " + returnedRes.getReservationId() + "\n");
 				done = true;
 			} else if(siteChoice.equals("0")) {
 				done = true;
@@ -199,7 +197,7 @@ public class CampgroundCLI {
 		double cost = costPerDay * daysBetween;
 		String costString = String.format("%.2f", cost);
 		List<Site> sites = siteDAO.getListOfAvailableSites(campground.getCampgroundId(), fromDate, toDate);
-		printHeading("Results Matching Your Search Criteria");
+		printHeading("\nResults Matching Your Search Criteria");
 		System.out.println(String.format("%-13s%-13s%-16s%-18s%-18s%-13s", 
 								"Site No.","Max Occup.","Accessible?","Max RV Length","Utility","Cost"));
 			
