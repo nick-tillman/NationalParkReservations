@@ -116,6 +116,8 @@ public class CampgroundCLI {
 			int campInt = Integer.parseInt(campString);
 			if(campInt == 0) {
 				done = true;
+			} else if(campInt > campgrounds.size()) {
+				System.out.println("\n*** "+campInt+" is not a valid option ***\n");
 			} else {
 				String fromDate = checkValidDate("What is the arrival date? (mm/dd/yyyy)");
 				String toDate = checkValidDate("What is the departure date? (mm/dd/yyyy)");
@@ -138,8 +140,6 @@ public class CampgroundCLI {
 					List<Site> sites = printAllAvailableSites(campgrounds.get(campInt - 1), fd, td);
 					makeReservation(sites, fd, td);
 					done = true;
-				} else if(campInt > campgrounds.size()) {
-					System.out.println("\n*** "+campInt+" is not a valid option ***\n");
 				} else {
 					done = true;
 				}
