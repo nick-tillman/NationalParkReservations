@@ -244,10 +244,10 @@ public class CampgroundCLI {
 					slashCount++;
 				}
 			}
-			if(numCount == 8 && slashCount == 2) {
+			if(numCount == 8 && slashCount == 2 && date.substring(2,3).equals("/") && date.substring(5,6).equals("/")) {
 				done = true;
 			} else {
-				System.out.println("*** Please enter a valid date in the format mm/dd/yyyy including slashes. ***");
+				System.out.println("*** Please enter a valid date in the format mm/dd/yyyy including slashes ***");
 			}
 		}
 		return date;
@@ -257,6 +257,7 @@ public class CampgroundCLI {
 		System.out.println(headingText);
 	}
 	
+	@SuppressWarnings("resource")
 	private String getUserInput(String prompt) {
 		System.out.print(prompt + " >>> ");
 		return new Scanner(System.in).nextLine();
