@@ -61,8 +61,13 @@ public class CampgroundCLI {
 		//print banner
 		while(true) {
 			printHeading("View Parks Interface");
-			Park parkChoice = (Park)menu.getChoiceFromOptions(parkDAO.showAllParks().toArray(), "Select a Park for Further Details");
-			if(parkChoice.equals("")) { //check for quit
+			List<Park> parkList = parkDAO.showAllParks();
+			Park quit = new Park();
+			quit.setName("Quit");
+			parkList.add(quit);
+			Park parkChoice = (Park)menu.getChoiceFromOptions(parkList.toArray(), "Select a Park for Further Details");
+			if(parkChoice.equals(quit)) {
+				System.out.print("\nShutting down.");
 				System.exit(1);
 			} else {
 				handleParkOptions(parkChoice);
@@ -71,23 +76,33 @@ public class CampgroundCLI {
 	}
 	
 	private void handleParkOptions(Park parkChoice) {
-		printHeading("\nPark Information Screen");
-		printParkInfo(parkChoice);
-		String menuChoice = (String)menu.getChoiceFromOptions(MENU_PARK_OPTIONS, "\nSelect a Command");
-		if(menuChoice.equals(MENU_PARK_OPTIONS_VIEW_CAMPGROUNDS)) {
-			handleViewCampgrounds(parkChoice);
-		}else if(menuChoice.equals(MENU_PARK_OPTIONS_SEARCH_RESERVATION)) {
-			handleSearchForReservation(parkChoice);
+		boolean done = false;
+		while(!done) {
+			printHeading("\nPark Information Screen");
+			printParkInfo(parkChoice);
+			String menuChoice = (String)menu.getChoiceFromOptions(MENU_PARK_OPTIONS, "\nSelect a Command");
+			if(menuChoice.equals(MENU_PARK_OPTIONS_VIEW_CAMPGROUNDS)) {
+				handleViewCampgrounds(parkChoice);
+			}else if(menuChoice.equals(MENU_PARK_OPTIONS_SEARCH_RESERVATION)) {
+				handleSearchForReservation(parkChoice);
+			} else if(menuChoice.equals(MENU_OPTION_RETURN_TO_PREVIOUS_SCREEN)) {
+				done = true;
+			}
 		}
 	}
 	
 	private void handleViewCampgrounds(Park parkChoice) {
-		printHeading("\nPark Campgrounds");
-		printHeading(parkChoice.getName() + " National Park Campgrounds");
-		printAllCampgroundsForPark(parkChoice.getParkId());
-		String menuChoice = (String)menu.getChoiceFromOptions(VIEW_CAMPGROUND_OPTIONS, "\nSelect a Command");
-		if(menuChoice.equals(VIEW_CAMPGROUND_OPTIONS_SEARCH_RESERVATION)) {
-			handleSearchForReservation(parkChoice);
+		boolean done = false;
+		while(!done) {
+			printHeading("\nPark Campgrounds");
+			printHeading(parkChoice.getName() + " National Park Campgrounds");
+			printAllCampgroundsForPark(parkChoice.getParkId());
+			String menuChoice = (String)menu.getChoiceFromOptions(VIEW_CAMPGROUND_OPTIONS, "\nSelect a Command");
+			if(menuChoice.equals(VIEW_CAMPGROUND_OPTIONS_SEARCH_RESERVATION)) {
+				handleSearchForReservation(parkChoice);
+			} else if(menuChoice.equals(MENU_OPTION_RETURN_TO_PREVIOUS_SCREEN)) {
+				done = true;
+			}
 		}
 	}
 	
@@ -99,32 +114,35 @@ public class CampgroundCLI {
 			List<Campground> campgrounds = campgroundDAO.getAllCampgroundsInPark(parkChoice.getParkId());
 			String campString = getUserInput("\nWhich campground (enter 0 to cancel)?");
 			int campInt = Integer.parseInt(campString);
-			
-			String fromDate = getUserInput("What is the arrival date? (mm/dd/yyyy)");
-			String toDate = getUserInput("What is the departure date? (mm/dd/yyyy)");
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/d/yyyy");
-			LocalDate fd = LocalDate.parse(fromDate, formatter);
-			LocalDate td = LocalDate.parse(toDate, formatter);
-			int fromDateMonth = fd.getMonthValue();
-			int toDateMonth = td.getMonthValue();
-			LocalDate today = LocalDate.now();
-			
-			if(fd.isBefore(today) || td.isBefore(today)) {
-				System.out.println("\nPlease enter an unpcoming date.");
-			} else if(campInt == 2 && parkChoice.getParkId() == 1 && (fromDateMonth < 5 || toDateMonth > 9)) {
-				System.out.println("\nTo book this campground, please select dates between its open months of May and September.");
-			} else if(campInt == 3 && parkChoice.getParkId() == 1 && (fromDateMonth < 5 || toDateMonth > 10)) {
-				System.out.println("\nTo book this campground, please select dates between its open months of May and October.");
-			} else if(campInt == 1 && parkChoice.getParkId() == 3 && (fromDateMonth < 5 || toDateMonth > 11)) {
-				System.out.println("\nTo book this campground, please select dates between its open months of May and November.");
-			} else if(campInt <= campgrounds.size() && campInt > 0) {
-				List<Site> sites = printAllAvailableSites(campgrounds.get(campInt - 1), fd, td);
-				makeReservation(sites, fd, td);
+			if(campInt == 0) {
 				done = true;
-			} else if(campInt > campgrounds.size()) {
-				System.out.println("\n*** "+campInt+" is not a valid option ***\n");
 			} else {
-				done = true;
+				String fromDate = getUserInput("What is the arrival date? (mm/dd/yyyy)");
+				String toDate = getUserInput("What is the departure date? (mm/dd/yyyy)");
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/d/yyyy");
+				LocalDate fd = LocalDate.parse(fromDate, formatter);
+				LocalDate td = LocalDate.parse(toDate, formatter);
+				int fromDateMonth = fd.getMonthValue();
+				int toDateMonth = td.getMonthValue();
+				LocalDate today = LocalDate.now();
+				
+				if(fd.isBefore(today) || td.isBefore(today)) {
+					System.out.println("\nPlease enter an unpcoming date.");
+				} else if(campInt == 2 && parkChoice.getParkId() == 1 && (fromDateMonth < 5 || toDateMonth > 9)) {
+					System.out.println("\nTo book this campground, please select dates between its open months of May and September.");
+				} else if(campInt == 3 && parkChoice.getParkId() == 1 && (fromDateMonth < 5 || toDateMonth > 10)) {
+					System.out.println("\nTo book this campground, please select dates between its open months of May and October.");
+				} else if(campInt == 1 && parkChoice.getParkId() == 3 && (fromDateMonth < 5 || toDateMonth > 11)) {
+					System.out.println("\nTo book this campground, please select dates between its open months of May and November.");
+				} else if(campInt <= campgrounds.size() && campInt > 0) {
+					List<Site> sites = printAllAvailableSites(campgrounds.get(campInt - 1), fd, td);
+					makeReservation(sites, fd, td);
+					done = true;
+				} else if(campInt > campgrounds.size()) {
+					System.out.println("\n*** "+campInt+" is not a valid option ***\n");
+				} else {
+					done = true;
+				}
 			}
 		}
 	}
