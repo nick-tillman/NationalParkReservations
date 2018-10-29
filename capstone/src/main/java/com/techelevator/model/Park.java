@@ -1,6 +1,7 @@
 package com.techelevator.model;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Park {
 	
@@ -53,9 +54,14 @@ public class Park {
 	}
 	public void setDescription(String description) {
 		this.description = description;
-	
 	}
 	public String toString() {
 		return this.name;
 	}
+	public String estabDateToString() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/d/yyyy");
+		String estabDate = this.establishDate.format(formatter);
+		return estabDate;
+	}
+
 }

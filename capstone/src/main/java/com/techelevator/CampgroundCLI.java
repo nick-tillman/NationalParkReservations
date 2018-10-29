@@ -177,11 +177,12 @@ public class CampgroundCLI {
 	}
 	
 	private void printParkInfo(Park choice) {
+		String area = String.format("%,d", choice.getArea());
 		System.out.println(choice.getName() + " National Park");
 		System.out.println(String.format("%-20s", "Location:") + choice.getLocation());
-		System.out.println(String.format("%-20s", "Established:") + choice.getEstablishDate());
-		System.out.println(String.format("%-20s", "Area:") + choice.getArea()+" sq km");
-		System.out.println(String.format("%-20s", "Annual Visitors:") + choice.getVisitors());
+		System.out.println(String.format("%-20s", "Established:") + choice.estabDateToString());
+		System.out.println(String.format("%-20s", "Area:") + area+" sq km");
+		System.out.println(String.format("%-20s", "Annual Visitors:") + String.format("%,d", choice.getVisitors()));
 		System.out.println();
 		int charCount = 0;
 		for(int i = 0; i < choice.getDescription().toCharArray().length; i++) {
