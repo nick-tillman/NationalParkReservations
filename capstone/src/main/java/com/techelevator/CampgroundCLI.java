@@ -255,15 +255,18 @@ public class CampgroundCLI {
 				int openMonth = Integer.parseInt(campground.getOpenFromMonth());
 				int closeMonth = Integer.parseInt(campground.getOpenToMonth());
 				
-
+				//next we check for valid month and day numbers
 				if(userMonth > 0 && userMonth < 13 && userDay > 0 && userDay < 32) {
 					output = LocalDate.parse(date, formatter);
+					//check to make sure the date they entered is after today
 					if(output.isBefore(today)) {
 						System.out.println("*** Please enter an upcoming date ***");
+					//check to make sure they entered months that are NOT within the campground open range
 					} else if(userMonth < openMonth || userMonth > closeMonth) {
 						System.out.println("To book this campground, please select dates between "
 								+ "its open months of " +campground.openMonthToString()
 								+ " and "+campground.closeMonthToString()+".");
+					//all checks passed and date is returned	
 					} else {
 						done = true;
 					}
