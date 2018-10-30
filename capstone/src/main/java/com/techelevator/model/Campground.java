@@ -48,15 +48,18 @@ public class Campground {
 	public void setDailyFee(double dailyFee) {
 		this.dailyFee = dailyFee;
 	}
-	public String toString() {
+	public String openMonthToString() {
 		int openFromMonth = Integer.parseInt(this.openFromMonth);
 		String om = Month.of(openFromMonth).toString();
-		String omConversion = om.substring(0,1).toUpperCase() + om.substring(1).toLowerCase();
+		return om.substring(0,1).toUpperCase() + om.substring(1).toLowerCase();
+	}
+	public String closeMonthToString() {
 		int openToMonth = Integer.parseInt(this.openToMonth);
 		String cm = Month.of(openToMonth).toString();
-		String cmConversion = cm.substring(0,1).toUpperCase() + cm.substring(1).toLowerCase();
-		
+		return cm.substring(0,1).toUpperCase() + cm.substring(1).toLowerCase();
+	}
+	public String toString() {
 		String df = String.format("%.2f", this.dailyFee);
-		return String.format("%-32s%-10s%-13s%-20s", this.name, omConversion, cmConversion, "$"+df);
+		return String.format("%-32s%-10s%-13s%-20s", this.name, openMonthToString(), closeMonthToString(), "$"+df);
 	}
 }

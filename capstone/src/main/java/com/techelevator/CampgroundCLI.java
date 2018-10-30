@@ -119,30 +119,13 @@ public class CampgroundCLI {
 			} else if(campInt > campgrounds.size()) {
 				System.out.println("\n*** "+campInt+" is not a valid option ***\n");
 			} else {
-				String fromDate = checkValidDate("What is the arrival date? (mm/dd/yyyy)");
-				String toDate = checkValidDate("What is the departure date? (mm/dd/yyyy)");
-				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/d/yyyy");
-				LocalDate fd = LocalDate.parse(fromDate, formatter);
-				LocalDate td = LocalDate.parse(toDate, formatter);
-				int fromDateMonth = fd.getMonthValue();
-				int toDateMonth = td.getMonthValue();
-				LocalDate today = LocalDate.now();
-				
-				if(fd.isBefore(today) || td.isBefore(today)) {
-					System.out.println("\nPlease enter an unpcoming date.");
-				} else if(campInt == 2 && parkChoice.getParkId() == 1 && (fromDateMonth < 5 || toDateMonth > 9)) {
-					System.out.println("\nTo book this campground, please select dates between its open months of May and September.");
-				} else if(campInt == 3 && parkChoice.getParkId() == 1 && (fromDateMonth < 5 || toDateMonth > 10)) {
-					System.out.println("\nTo book this campground, please select dates between its open months of May and October.");
-				} else if(campInt == 1 && parkChoice.getParkId() == 3 && (fromDateMonth < 5 || toDateMonth > 11)) {
-					System.out.println("\nTo book this campground, please select dates between its open months of May and November.");
-				} else if(campInt <= campgrounds.size() && campInt > 0) {
-					List<Site> sites = printAllAvailableSites(campgrounds.get(campInt - 1), fd, td);
-					makeReservation(sites, fd, td);
-					done = true;
-				} else {
-					done = true;
+				LocalDate fromDate = checkValidDate(campgrounds.get(campInt - 1), "What is the arrival date? (mm/dd/yyyy)");
+				LocalDate toDate = checkValidDate(campgrounds.get(campInt - 1), "What is the departure date? (mm/dd/yyyy)");				
+				if(campInt <= campgrounds.size() && campInt > 0) {
+					List<Site> sites = printAllAvailableSites(campgrounds.get(campInt - 1), fromDate, toDate);
+					makeReservation(sites, fromDate, toDate);
 				}
+				done = true;
 			}
 		}
 	}
@@ -244,11 +227,17 @@ public class CampgroundCLI {
 		return input;
 	}
 	
-	private String checkValidDate(String message) {
+	private LocalDate checkValidDate(Campground campground, String message) {
 		boolean done = false;
 		String date = "";
+		LocalDate today = LocalDate.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/d/yyyy");
+		LocalDate output = null;
+		
 		while(!done) {
 			date = getUserInput(message);
+			
+			//here we are counting digits and slashes to use to check for the correct format
 			int numCount = 0;
 			int slashCount = 0;
 			for(char c : date.toCharArray()) {
@@ -258,11 +247,26 @@ public class CampgroundCLI {
 					slashCount++;
 				}
 			}
+			
+			//first, we check for the correct number of digits and slashes and that they are in the right place
 			if(numCount == 8 && slashCount == 2 && date.substring(2,3).equals("/") && date.substring(5,6).equals("/")) {
-				int month = Integer.parseInt(date.substring(0,2));
-				int day = Integer.parseInt(date.substring(3,5));
-				if(month > 0 && month < 13 && day > 0 && day < 32) {
-					done = true;
+				int userMonth = Integer.parseInt(date.substring(0,2));
+				int userDay = Integer.parseInt(date.substring(3,5));
+				int openMonth = Integer.parseInt(campground.getOpenFromMonth());
+				int closeMonth = Integer.parseInt(campground.getOpenToMonth());
+				
+
+				if(userMonth > 0 && userMonth < 13 && userDay > 0 && userDay < 32) {
+					output = LocalDate.parse(date, formatter);
+					if(output.isBefore(today)) {
+						System.out.println("*** Please enter an upcoming date ***");
+					} else if(userMonth < openMonth || userMonth > closeMonth) {
+						System.out.println("To book this campground, please select dates between "
+								+ "its open months of " +campground.openMonthToString()
+								+ " and "+campground.closeMonthToString()+".");
+					} else {
+						done = true;
+					}
 				} else {
 					System.out.println("*** Please enter a valid date in the format mm/dd/yyyy including slashes ***");
 				}
@@ -270,9 +274,9 @@ public class CampgroundCLI {
 				System.out.println("*** Please enter a valid date in the format mm/dd/yyyy including slashes ***");
 			}
 		}
-		return date;
-
+		return output;
 	}
+	
 	private void printHeading(String headingText) {
 		System.out.println(headingText);
 	}
