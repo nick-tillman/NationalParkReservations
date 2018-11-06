@@ -58,19 +58,19 @@ public class CampgroundCLI {
 	}
 	
 	public void run() {
-		//print banner
-		while(true) {
+		boolean done = false;
+		while(!done) {
 			printHeading("View Parks Interface");
 			List<Park> parkList = parkDAO.showAllParks();
-			Park quit = new Park();
-			quit.setName("Quit");
-			parkList.add(quit);
-			Park parkChoice = (Park)menu.getChoiceFromOptions(parkList.toArray(), "Select a Park for Further Details");
-			if(parkChoice.equals(quit)) {
-				System.out.print("\nShutting down.");
-				System.exit(1);
+			List<Object> menuOptions = new ArrayList<>();
+			menuOptions.addAll(parkList);
+			menuOptions.add("Quit");
+			Object menuChoice = menu.getChoiceFromOptions(menuOptions.toArray(), "Select a Park for Further Details");
+			if(menuChoice instanceof Park) {
+				handleParkOptions((Park)menuChoice);
 			} else {
-				handleParkOptions(parkChoice);
+				System.out.print("\nShutting down.");
+				done = true;
 			}
 		}
 	}
